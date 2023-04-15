@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <windows.h>
+#include <sys/syscall.h>
 
 void *mythread(void *arg) {
     while(1) {
-        printf("mythread PID: %d\n", (int)GetCurrentProcessId());
-        printf("mythread TID: %d\n", (int)GetCurrentThreadId());
+        printf("mythread PID: %d\n", (int)getpid());
+        printf("mythread TID: %d\n", (int)syscall(SYS_gettid));
         sleep(5);
     }
 }
@@ -18,8 +18,8 @@ int main() {
     pthread_create(&thread, NULL, &mythread, NULL);
 
     while(1) {
-        printf("main\tPID: %d\n", (int)GetCurrentProcessId());
-        printf("main\tTID: %d\n", (int)GetCurrentThreadId());
+        printf("main\tPID: %d\n", (int)getpid());
+        printf("main\tTID: %d\n", (int)syscall(SYS_gettid));
         sleep(10);
     }
     return 0;
